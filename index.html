@@ -1,0 +1,122 @@
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>رعد و برق — اطلاعات تماس</title>
+  <style>
+    /* ساده و پاسخ‌گو — می‌توانید استایل‌ها را آسان تغییر دهید */
+    :root{--accent:#0b76ef;--bg:#f7f9fc;--card:#ffffff}
+    *{box-sizing:border-box;font-family: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    html,body{height:100%;margin:0;background:var(--bg);color:#111}
+    .wrap{max-width:760px;margin:28px auto;padding:20px}
+    header{display:flex;gap:12px;align-items:center}
+    .logo{width:72px;height:72px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#5ad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:6px 0 16px;color:#334}
+
+    .card{background:var(--card);border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+    .branch{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .branch-info{flex:1}
+    .branch h3{margin:0 0 6px;font-size:16px}
+    .branch p{margin:0;color:#556}
+
+    .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    a.btn{display:inline-block;padding:10px 12px;border-radius:10px;text-decoration:none;font-weight:600;border:1px solid rgba(10,10,10,0.05)}
+    a.primary{background:var(--accent);color:#fff;border-color:transparent}
+    a.ghost{background:transparent;color:var(--accent)}
+
+    footer{color:#667;font-size:13px;margin-top:18px;text-align:center}
+
+    /* responsive */
+    @media (max-width:520px){.wrap{padding:12px}.logo{width:56px;height:56px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">ر و ب</div>
+      <div>
+        <h1>فروشگاه الکتریکی رعد و برق</h1>
+        <p class="lead">همهٔ اطلاعات تماس، آدرس‌ها و لینک‌ها برای قرار دادن در بیو اینستاگرام</p>
+      </div>
+    </header>
+
+    <!-- === تنظیمات سریع: این بخش را با اطلاعات خودتان جایگزین کنید === -->
+    <!-- سه نوع لینک برای هر شعبه: شماره تماس (tel:)، آدرس (لینک به هر نقشه مثل Google Maps یا نشان) و وبسایت/صفحه اختصاصی -->
+
+    <div class="card" id="main-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <strong>شعبه‌ها</strong>
+        <small>لمس کنید تا تماس یا مسیریابی باز شود</small>
+      </div>
+      <div id="branches"></div>
+    </div>
+
+    <div class="card">
+      <strong>پیوندهای مهم</strong>
+      <div class="actions" style="margin-top:10px">
+        <a id="websiteBtn" class="btn primary" target="_blank" rel="noopener">وب‌سایت اختصاصی</a>
+        <a id="instaBtn" class="btn ghost" target="_blank" rel="noopener">اینستاگرام</a>
+        <a id="whBtn" class="btn" target="_blank" rel="noopener">واتساپ فروش</a>
+      </div>
+    </div>
+
+    <footer>کپی‌رایت © رعد و برق — آماده برای قرار دادن در بیو اینستاگرام</footer>
+  </div>
+
+  <script>
+    /* ====== داده‌های نمونه — اینجا را با دادهٔ واقعی جایگزین کنید ====== */
+    const data = {
+      companyName: 'فروشگاه الکتریکی رعد و برق',
+      website: 'https://example.com', // لینک سایت شخصی‌سازی شده
+      instagram: 'https://instagram.com/yourshop',
+      whatsapp: 'https://wa.me/98912XXXXXXX?text=%D8%B3%D9%84%D8%A7%D9%85',
+      branches: [
+        {
+          name: 'شعبه مرکزی',
+          address: 'خیابان انقلاب، پلاک ۱۲۳، تهران',
+          phone: '+98-21-12345678',
+          // mapLink: یک لینک به هر سرویس نقشه قابل قبول (Google Maps, نشان، Waze و...)
+          mapLink: 'https://maps.google.com/?q=35.6892,51.3890'
+        },
+        {
+          name: 'شعبه غرب',
+          address: 'خیابان ستارخان، پلاک ۵۶، تهران',
+          phone: '+98-21-87654321',
+          mapLink: 'https://maps.google.com/?q=35.705,51.346'
+        }
+      ]
+    };
+
+    /* ========== رسم کردن شعبه‌ها روی صفحه ========== */
+    const branchesEl = document.getElementById('branches');
+    data.branches.forEach(b => {
+      const wrap = document.createElement('div');
+      wrap.className = 'card branch';
+
+      wrap.innerHTML = `
+        <div class="branch-info">
+          <h3>${escapeHtml(b.name)}</h3>
+          <p>${escapeHtml(b.address)}</p>
+          <p style="margin-top:6px">تلفن: <a href="tel:${sanitizeTel(b.phone)}">${escapeHtml(b.phone)}</a></p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+          <a class="btn primary" href="${b.mapLink}" target="_blank" rel="noopener">مسیر (نقشه)</a>
+          <a class="btn" href="tel:${sanitizeTel(b.phone)}">تماس سریع</a>
+        </div>
+      `;
+
+      branchesEl.appendChild(wrap);
+    });
+
+    // دکمه‌های پیوندهای اصلی
+    document.getElementById('websiteBtn').href = data.website;
+    document.getElementById('instaBtn').href = data.instagram;
+    document.getElementById('whBtn').href = data.whatsapp;
+
+    /* ==== توابع کمکی برای ایمنی نمایش ===== */
+    function escapeHtml(s){ return String(s).replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'})[c]); }
+    function sanitizeTel(t){ return String(t).replace(/[^+0-9]/g,''); }
+  </script>
+</body>
+</html>
